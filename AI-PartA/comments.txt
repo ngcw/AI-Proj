@@ -1,0 +1,103 @@
+COMP30024: Artificial Intelligence
+PartA
+Chin Wai Ng (ngcw)
+Renlord Yang (rnyang)
+
+Pseudocode:
+
+Data: Game
+Result: Display of game result
+
+Function boardDFS(board, piece, player, path):
+    let s be a stack;
+    links = checkSurrounding(board,piece, player);
+    add all pieces in links to s;
+    while s is not empty:					
+        piece = stack.removeLast;
+        add piece to path;
+        links = checkSurrounding(board,piece, player);
+        for pieces in links:
+	         if pieces not in stack:
+                  add pieces to stack;
+	        end if;
+	    end for;
+    end while;
+    return path;
+end function;
+
+Function checkTripod(Game, path):				
+    if path length is more than boardSize + 1:			
+	    if pieces at edge is >= 3 and different edges 		
+	    and center pieces = all pieces - pieces at edge:
+	        return true;
+	    end if;
+    end if;
+    return false;
+end function;
+
+Function checkLoop(Game, path, player):				
+    if path length > 5:
+        let L be a list of loop elements
+	    let J be a list of branching positions
+	    let s be a stack
+	    links = checkSurrounding(board,piece, player);
+    	add all pieces in links to s;
+	    add first piece to loop;
+    	while s is not empty:					
+        	piece = stack.removeLast;
+        	add piece to loop;
+		    if this piece is not linked to previous piece:
+		        reset count to last junction;
+      		end if;
+        	links = checkSurrounding(board,piece, player);
+		    if all loop constraints met:
+		       return true;
+		    end if;
+        	for pieces in links:
+	    	    if pieces not in stack:
+                  	add pieces to stack;
+	    	    end if;
+		    end for;
+		    if more than one piece is added to stack, remember
+		    current position in junction;
+    	end while;
+    end if;
+end function;
+
+Function CheckWinner(Game):
+    for each position in board of game:
+        if piece at position = player piece and not in visited:
+	    	path = boardDFS(board, piece,player); //Depth First Search
+	    	add all pieces in path to visited;
+	    	checkTripod(Game, path);
+	    	checkLoop(Game,path, player);
+		end if;
+    end for;
+    if there is a winner:
+		display winner;
+		display win methods;
+    else:
+		if board is full:
+	    	display draw;
+		else:
+	    	display none;
+		end if;
+    end if;
+end function;
+
+
+
+Time Complexity Analysis
+
+The only search algorithm used in this program is Depth First Search. Each 
+position in the board is searched at least once for a player cell. Player cells 
+that are part of a previous Depth First Search path will be recorded and not 
+searched again. Therefore, the time complexity for the path search is O(n) where 
+n is the total number of board positions. The check tripod win function only 
+checks for the position of each piece in the path which results in a time 
+complexity of O(m) where m is the number of pieces in a path and m is at most 
+n/2 for each player. The check loop win function conducts another Depth First 
+Search on the existing path to detect cycles and each piece in path will again 
+only be traversed once resulting in O(m) time complexity as well. Thus, the 
+final time complexity of the entire program would result to O(n+km) where k is 
+the number of linked paths in current board state. 
