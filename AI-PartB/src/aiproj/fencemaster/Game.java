@@ -14,39 +14,52 @@ public class Game {
 	// static variables
 	public static int instanceCount = 0;
 	// private instance variables for game
-	private char[][] board;
+	private int[][] board;
 	private int boardSize;
 	private int[] rowLength;
 	private int maxSize;
+	private int moveCount = 1;
 	
-	//constructor
+	private int player, enemy;
+	
 	/**
-	 * creates an instance of the game
+	 * CONSTRUCTOR: creates an instance of the game
 	 * @param size, size of board
 	 */
-	@SuppressWarnings("static-access")
-	public Game (int size){
+	public Game (int size, int piece){
 		this.maxSize = size*2-1;
 		this.boardSize = size;
-		rowLength = new int[maxSize];
+		this.rowLength = new int[maxSize];
+		
 		for (int n = 0; n < boardSize; n++){
 			rowLength[n] = boardSize + n;
 		}
 		for (int m = boardSize, c = 1; m < maxSize; m++, c++){
 			rowLength[m] = (maxSize) - c;
 		}
-		board = new char[maxSize][maxSize];
-		this.instanceCount++;
-	}
-	public void updateGameState(Move m){
-		if (m.IsSwap){
-			
-		}else{
-			
+		
+		this.board = new int[maxSize][maxSize];
+		
+		// init for gameboard.
+		for (int i = maxSize; i < maxSize; i++) {
+			for (int j = maxSize; j < maxSize; j++) {
+				if ( j < rowLength[i] ) {
+					board[i][j] = Piece.EMPTY;
+
+				} else
+					board[i][j] = Piece.INVALID;
+			}
 		}
+		
+		this.setPlayer(piece);
+		
+		Game.instanceCount++;
 	}
+	
+
 	/**
 	 * check if input of board is in bound of board size
+	 * 
 	 * @param rowLength, the length of each row in board
 	 * @param row, row of piece being checked
 	 * @param col, column of piece being checked
@@ -58,6 +71,7 @@ public class Game {
 	}
 	/**
 	 * check if surrounding of player piece contains more player pieces
+	 * 
 	 * @param board, board of game
 	 * @param rowLength, the length of each row in board
 	 * @param row, row of piece being checked
@@ -66,7 +80,7 @@ public class Game {
 	 * @return ArrayDeque<int[]>, returns an ArrayDeque of surrounding pieces
 	 */
 	public ArrayDeque<int[]> checkSurrounding(char[][] board, int[] rowLength, 
-			int row, int col, char player){
+			int row, int col, int player){
 		ArrayDeque<int[]> links = new ArrayDeque<int[]>(6);
 		int maxBoardSize = board.length;
 		// upper area of board
@@ -153,6 +167,7 @@ public class Game {
 	}
 	/**
 	 * Format the row and column position of a piece into an array format
+	 * 
 	 * @param row, row of piece
 	 * @param col, column of piece
 	 * @return int[], an integer array of [0] for row and [1] for column
@@ -164,8 +179,19 @@ public class Game {
 		loc[1] = col;
 		return loc;
 	}
+	
+	/**
+	 * Updates the game board
+	 * 
+	 * @param m, opponent move
+	 */
+	public void update(Move m) {
+		this.board[m.Row][m.Col] = m.P;
+	}
+	
 	/**
 	 * check if a piece is already in a visited ArrayList
+	 * 
 	 * @param list, an ArrayList of visited pieces
 	 * @param row, row of piece in check
 	 * @param col, column of piece in check
@@ -181,6 +207,7 @@ public class Game {
 	}
 	/**
 	 * check if a piece is already in a visited ArrayDeque
+	 * 
 	 * @param list, an ArrayDeque of visited pieces
 	 * @param row, row of piece in check
 	 * @param col, column of piece in check
@@ -196,6 +223,7 @@ public class Game {
 	}
 	/**
 	 * check if there is any similar pieces in both ArrayDeque
+	 * 
 	 * @param list, first ArrayDeque list
 	 * @param list2, second ArrayDeque list
 	 * @return boolean, if there exist a similar piece
@@ -212,7 +240,8 @@ public class Game {
 		return false;
 	}
 	/**
-	 * Performs a non-recursive Depth-First Search on a piece
+	 * Performs Chaining Search
+	 * 
 	 * @param board, board of game
 	 * @param rowLength, the length of each row in board
 	 * @param row, row of piece being checked
@@ -240,6 +269,17 @@ public class Game {
 		}
 		return path;
 	}
+	
+	/** 
+	 * Checks if its possible to perform a swap move in current game state
+	 */
+	public boolean canSwap() {
+		if (moveCount == 1)
+			return true;
+		
+		return false;
+	}
+	
 	/**
 	 * @return Array of row lengths of board
 	 */
@@ -249,7 +289,7 @@ public class Game {
 	/**
 	 * @return the board
 	 */
-	public char[][] getBoard(){
+	public int[][] getBoard(){
 		return this.board;
 	}
 	/**
@@ -263,5 +303,25 @@ public class Game {
 	 */
 	public int getMaxSize(){
 		return this.maxSize;
+	}
+
+
+	public int getPlayer() {
+		return player;
+	}
+
+
+	public void setPlayer(int player) {
+		this.player = player;
+	}
+
+
+	public int getEnemy() {
+		return enemy;
+	}
+
+
+	public void setEnemy(int enemy) {
+		this.enemy = enemy;
 	}
 }
