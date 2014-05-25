@@ -9,6 +9,7 @@ package aiproj.fencemaster;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Game {
 	// static variables
@@ -19,6 +20,7 @@ public class Game {
 	private int[] rowLength;
 	private int maxSize;
 	private int moveCount = 1;
+	private int emptySpace = 0;
 	
 	private int player, enemy;
 	
@@ -45,7 +47,7 @@ public class Game {
 			for (int j = maxSize; j < maxSize; j++) {
 				if ( j < rowLength[i] ) {
 					board[i][j] = Piece.EMPTY;
-
+					emptySpace++;
 				} else
 					board[i][j] = Piece.INVALID;
 			}
@@ -79,7 +81,7 @@ public class Game {
 	 * @param player, player in check (White or Black)
 	 * @return ArrayDeque<int[]>, returns an ArrayDeque of surrounding pieces
 	 */
-	public ArrayDeque<int[]> checkSurrounding(char[][] board, int[] rowLength, 
+	public ArrayDeque<int[]> checkSurrounding(int[][] board, int[] rowLength, 
 			int row, int col, int player){
 		ArrayDeque<int[]> links = new ArrayDeque<int[]>(6);
 		int maxBoardSize = board.length;
@@ -183,10 +185,21 @@ public class Game {
 	/**
 	 * Updates the game board
 	 * 
-	 * @param m, opponent move
+	 * @param m, move to be updated
 	 */
 	public void update(Move m) {
 		this.board[m.Row][m.Col] = m.P;
+		emptySpace--;
+	}
+	
+	/**
+	 * Reverts the update made to game board
+	 * 
+	 * @param m, move to be reverted
+	 */
+	public void revertUpdate(Move m) {
+		this.board[m.Row][m.Col] = Piece.EMPTY;
+		emptySpace++;
 	}
 	
 	/**
@@ -250,8 +263,8 @@ public class Game {
 	 * @param path, a list of connected pieces
 	 * @return ArrayList<int[]>, a list of connected pieces (path)
 	 */
-	public ArrayList<int[]> boardDFS(char[][] board,int[] rowLength, int row, 
-			int col, char player,ArrayList<int[]> path){
+	public ArrayList<int[]> boardDFS(int[][] board,int[] rowLength, int row, 
+			int col, int player, ArrayList<int[]> path){
 		ArrayDeque<int[]> links = checkSurrounding(board,rowLength,row,col,
 				player);
 		ArrayDeque<int[]> stack = new ArrayDeque<int[]>();
@@ -270,13 +283,23 @@ public class Game {
 		return path;
 	}
 	
+	public LinkedList<Move> generateMoves(int player) {
+		LinkedList<Move> moves = new LinkedList<Move>();
+		
+		
+		
+		return moves;
+	}
+	
 	/** 
 	 * Checks if its possible to perform a swap move in current game state
+	 * 
+	 * @return true, if it is possible to swap.
+	 * @return false, if it is NOT possible to swap.
 	 */
 	public boolean canSwap() {
 		if (moveCount == 1)
 			return true;
-		
 		return false;
 	}
 	
@@ -323,5 +346,12 @@ public class Game {
 
 	public void setEnemy(int enemy) {
 		this.enemy = enemy;
+	}
+
+	
+	public boolean terminalGame() {
+		if (emptySpace == 0)
+			return true;
+		return false;
 	}
 }

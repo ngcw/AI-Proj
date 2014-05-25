@@ -10,29 +10,7 @@ public class Ngcw implements Player, Piece{
 	
 	@Override
 	public int getWinner() {
-		int blackCount = 0; 
-		int whiteCount = 0;
-		for (int i = 0; i < g.getMaxSize(); i++) {
-			for (int j = 0; j < g.getRowLength()[i]; j++) {
-				switch(g.getBoard()[i][j]) {
-					case Piece.WHITE:
-						whiteCount++; 
-						break;
-					case Piece.BLACK:
-						blackCount++;
-						break;
-					default:
-						return Piece.INVALID;
-				}
-			}
-		}
-		
-		if (blackCount > whiteCount)
-			return Piece.BLACK;
-		else if (whiteCount > blackCount)
-			return Piece.WHITE;
-		
-		return Piece.EMPTY;
+		return TestWin.checkWinner(g);
 	}
 
 	@Override
