@@ -171,7 +171,7 @@ public class TestWin {
 		    			g.getRowLength(),move[0],move[1],player);
 			}
 			loop.add(move);
-			if (startLink.size() > 2){
+			if (startLink.size() > 1){
 				junction.add(g.arrayFormat(0, 0));
 			}
 			// Depth First Search to find shortest possible loop
