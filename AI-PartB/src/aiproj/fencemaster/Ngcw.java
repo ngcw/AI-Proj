@@ -1,6 +1,7 @@
 package aiproj.fencemaster;
 
 import java.io.PrintStream;
+import java.util.LinkedList;
 
 
 public class Ngcw implements Player, Piece{
@@ -25,9 +26,21 @@ public class Ngcw implements Player, Piece{
 
 	@Override
 	public Move makeMove() {
-		// TODO Auto-generated method stub
-		
-		return null;
+		LinkedList<Move> moves = g.generateMoves(g.getPlayer());
+		int bestScore = Integer.MIN_VALUE;
+		Move bestMove = moves.peekFirst();
+		for (Move m : moves) {
+			g.update(m);
+			int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
+			g.revertUpdate(m);
+			if (val > bestScore) {
+				bestScore = val;
+				bestMove = m;
+			}
+			System.out.println("1 Move Evaluated");
+		}
+		g.update(bestMove);
+		return bestMove;
 	}
 
 	@Override

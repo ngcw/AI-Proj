@@ -283,11 +283,26 @@ public class Game {
 		return path;
 	}
 	
+	/**
+	 * Generates all possible moves for current board configuration
+	 * @param player
+	 * @return
+	 */
 	public LinkedList<Move> generateMoves(int player) {
 		LinkedList<Move> moves = new LinkedList<Move>();
 		
-		
-		
+		for (int i = 0; i < this.maxSize; i++) {
+			for (int j = 0; j < this.rowLength[i]; j++) {
+				if (moveCount == 1 && this.board[i][j] == this.enemy) {
+					Move m = new Move(player, true, i, j);
+					moves.push(m);
+				}
+				if (this.board[i][j] == Piece.EMPTY) {
+					Move m = new Move(player, false, i, j);
+					moves.push(m);
+				}
+			}
+		}
 		return moves;
 	}
 	

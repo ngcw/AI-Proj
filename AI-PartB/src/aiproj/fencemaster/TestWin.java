@@ -25,8 +25,8 @@ public class TestWin {
 		ArrayList<int[]> visited_w = new ArrayList<int[]>();
 		ArrayList<int[]> visited_b = new ArrayList<int[]>();
 		boolean emptySpace = false;
-		for (int i = 0; i < game.getBoard().length; i++){
-			for (int j = 0; j < game.getBoard().length; j++){
+		for (int i = 0; i < game.getMaxSize(); i++){
+			for (int j = 0; j < game.getRowLength()[i]; j++){
 				// check if piece in board is White player's piece and then 
 				// traverse following pieces connected to form a path
 				if ((game.getBoard()[i][j] == Piece.WHITE) && 
