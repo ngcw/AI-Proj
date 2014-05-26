@@ -1,7 +1,8 @@
 package aiproj.fencemaster;
 
 public class Evaluation {
-
+	public static int result = 0;
+	
 	/**
 	 * OBJECTIVE: favour piece count.
 	 * 
@@ -13,11 +14,12 @@ public class Evaluation {
 		
 		int result = TestWin.checkWinner(g);
 		
-		if (result == g.getPlayer() || result == g.getEnemy())
+		if (result == g.getPlayer())
 			return Integer.MAX_VALUE;
-		else
+		else if (result == g.getEnemy())
+			return Integer.MIN_VALUE;
+		else 
 			return 0;
-			
 	}
 	
 	

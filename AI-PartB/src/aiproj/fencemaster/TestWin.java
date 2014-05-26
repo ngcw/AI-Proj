@@ -25,6 +25,7 @@ public class TestWin {
 		ArrayList<int[]> visited_w = new ArrayList<int[]>();
 		ArrayList<int[]> visited_b = new ArrayList<int[]>();
 		boolean emptySpace = false;
+		
 		for (int i = 0; i < game.getMaxSize(); i++){
 			for (int j = 0; j < game.getRowLength()[i]; j++){
 				// check if piece in board is White player's piece and then 
@@ -44,7 +45,7 @@ public class TestWin {
 				// check if piece in board is Black player's piece and piece is
 				// not visited then traverse following pieces connected to form 
 				// a path
-				}else if ((game.getBoard()[i][j] == Piece.BLACK) && 
+				} else if ((game.getBoard()[i][j] == Piece.BLACK) && 
 						(!game.checkVisit(visited_b,i,j))){
 					ArrayList<int[]> path_b = new ArrayList<int[]>();
 					path_b.add(game.arrayFormat(i, j));
@@ -153,7 +154,7 @@ public class TestWin {
 	 */
 	public static boolean checkLoop(Game g, ArrayList<int[]> path, int player){
 		// a loop needs to be at least of 6 pieces
-		if (path.size() > 5){
+		if (path.size() > 5) {
 			ArrayList<int[]> loop = new ArrayList<int[]>();
 			ArrayDeque<int[]> junction = new ArrayDeque<int[]>();
 			// a loop can only happen when the starting player piece have two 
@@ -163,7 +164,7 @@ public class TestWin {
 	    			g.getRowLength(),move[0],move[1],player);
 			ArrayDeque<int[]> startLink = g.checkSurrounding(g.getBoard(),
 	    			g.getRowLength(),move[0],move[1],player);
-			for (int i = 1; links.size() < 2 && path.size()-i>5; i++){
+			for (int i = 1; links.size() < 2 && path.size()-i > 5; i++){
 				move = path.get(i);
 				links = g.checkSurrounding(g.getBoard(),
 		    			g.getRowLength(),move[0],move[1],player);

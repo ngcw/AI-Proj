@@ -16,9 +16,7 @@ public class SearchAgent {
 	 * @return best score for a given state
 	 */
 	public static int negamax(Game g, int depth, int player) {
-		System.out.println("Current Depth:" + depth);
 		if (depth == 0 || g.terminalGame()) {
-			System.out.println("Returning");
 			if (player == g.getEnemy())
 				return -Evaluation.naiveEvaluator(g);
 			else
@@ -39,6 +37,31 @@ public class SearchAgent {
 			g.revertUpdate(m);
 			if (val > bestValue)
 				bestValue = val;
+		}
+		
+		return bestValue;
+	}
+	
+	public static int negamaxABP(Game g, int depth, int alpha, int beta, int player) {
+		if (depth == 0 || g.terminalGame()) {
+			if (player == g.getEnemy())
+				return -Evaluation.naiveEvaluator(g);
+			else
+				return Evaluation.naiveEvaluator(g);
+		}
+		
+		int bestValue = Integer.MIN_VALUE;
+		LinkedList<Move> moves = g.generateMoves(player);
+		// Order Moves
+		
+		for (Move m : moves) {
+			g.update(m);
+			int val = -SearchAgent.negamax(g, depth - 1, player);
+			g.revertUpdate(m);
+			if (val > bestValue) {
+				bestValue = val;
+				
+			}
 		}
 		
 		return bestValue;

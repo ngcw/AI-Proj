@@ -28,16 +28,16 @@ public class Game {
 	 * CONSTRUCTOR: creates an instance of the game
 	 * @param size, size of board
 	 */
-	public Game (int size, int piece){
-		this.maxSize = size*2-1;
-		this.boardSize = size;
+	public Game (int size, int piece) {
+		this.maxSize = size * 2 - 1;
+		this.boardSize = size; 
 		this.rowLength = new int[maxSize];
 		
-		for (int n = 0; n < boardSize; n++){
+		for (int n = 0; n < boardSize; n++) {
 			rowLength[n] = boardSize + n;
 		}
-		for (int m = boardSize, c = 1; m < maxSize; m++, c++){
-			rowLength[m] = (maxSize) - c;
+		for (int m = boardSize, c = 1; m < maxSize; m++, c++) {
+			rowLength[m] = maxSize - c;
 		}
 		
 		this.board = new int[maxSize][maxSize];
@@ -54,6 +54,10 @@ public class Game {
 		}
 		
 		this.setPlayer(piece);
+		if (this.player == Piece.WHITE)
+			this.enemy = Piece.BLACK;
+		else
+			this.enemy = Piece.WHITE;
 		
 		Game.instanceCount++;
 	}
@@ -190,6 +194,7 @@ public class Game {
 	public void update(Move m) {
 		this.board[m.Row][m.Col] = m.P;
 		emptySpace--;
+		moveCount++;
 	}
 	
 	/**
@@ -200,6 +205,7 @@ public class Game {
 	public void revertUpdate(Move m) {
 		this.board[m.Row][m.Col] = Piece.EMPTY;
 		emptySpace++;
+		moveCount--;
 	}
 	
 	/**
@@ -289,6 +295,13 @@ public class Game {
 	 * @return
 	 */
 	public LinkedList<Move> generateMoves(int player) {
+		int opponent = 0;
+		
+		if (player == Piece.WHITE)
+			opponent = Piece.BLACK;
+		else
+			opponent = Piece.WHITE;
+		
 		LinkedList<Move> moves = new LinkedList<Move>();
 		
 		for (int i = 0; i < this.maxSize; i++) {
@@ -365,8 +378,11 @@ public class Game {
 
 	
 	public boolean terminalGame() {
-		if (emptySpace == 0)
+		int result = TestWin.checkWinner(this);
+		
+		if (result == Piece.BLACK || result == Piece.WHITE)
 			return true;
-		return false;
+		else
+			return false;
 	}
 }

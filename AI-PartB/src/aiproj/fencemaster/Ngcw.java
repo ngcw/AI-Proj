@@ -37,7 +37,7 @@ public class Ngcw implements Player, Piece{
 				bestScore = val;
 				bestMove = m;
 			}
-			System.out.println("1 Move Evaluated");
+			//System.out.println("1 Move Evaluated");
 		}
 		g.update(bestMove);
 		return bestMove;
@@ -53,15 +53,20 @@ public class Ngcw implements Player, Piece{
 		if (g.canSwap()) {
 			if (m.IsSwap) {
 				// writing off the board.
-				if (m.Row >= g.getSize() || m.Col >= g.getMaxSize() || g.getBoard()[m.Row][m.Col] == Piece.INVALID)
+				if (m.Row >= g.getMaxSize() || m.Col >= g.getRowLength()[m.Row] || g.getBoard()[m.Row][m.Col] == Piece.INVALID) {
+					System.out.println("ERROR: Attempting to swap with Piece that does not exist!");
 					return -1;
+				}
 				// attempting to swap with empty.
-				if (g.getBoard()[m.Row][m.Col] == Piece.EMPTY)
+				if (g.getBoard()[m.Row][m.Col] == Piece.EMPTY) {
+					System.out.println("ERROR: Attempting to swap with EMPTY piece");
 					return -1;
+				}
 				// attempting to swap with self.
-				if (g.getBoard()[m.Row][m.Col] == m.P)
+				if (g.getBoard()[m.Row][m.Col] == m.P) {
+					System.out.println("ERROR: Attempting to swap with SELF");
 					return -1;
-				
+				}
 			} else {
 				// Swap Move Update
 				g.update(m);
@@ -71,11 +76,15 @@ public class Ngcw implements Player, Piece{
 		
 		// ORDINARY MOVE CHECK
 		// writting off the board.
-		if (m.Row >= g.getSize() || m.Col >= g.getMaxSize() || g.getBoard()[m.Row][m.Col] == Piece.INVALID)
+		if (m.Row >= g.getMaxSize() || m.Col >= g.getRowLength()[m.Row] || g.getBoard()[m.Row][m.Col] == Piece.INVALID) {
+			System.out.println("ERROR: Attempting to place outside board!");
 			return -1;
+		}
 		// attempting to move to an occupied spot.
-		if (g.getBoard()[m.Row][m.Col] != Piece.EMPTY)
+		if (g.getBoard()[m.Row][m.Col] != Piece.EMPTY) {
+			System.out.println("ERROR: Attempting to place on an OCCUPIED piece");
 			return -1;
+		}
 		
 		// Ordinary Move Update
 		g.update(m);
@@ -85,7 +94,7 @@ public class Ngcw implements Player, Piece{
 	@Override
 	public void printBoard(PrintStream output) {
 		for (int i = 0; i < g.getMaxSize(); i++) {
-			for (int j = 0; i < g.getRowLength()[i]; i++) {
+			for (int j = 0; j < g.getRowLength()[i]; j++) {
 				switch(g.getBoard()[i][j]) {
 					case Piece.BLACK:
 						output.print("B ");
@@ -101,6 +110,7 @@ public class Ngcw implements Player, Piece{
 						break;
 				}
 			}
+			output.print("\n");
 		}
 		output.print("\n");
 	}
