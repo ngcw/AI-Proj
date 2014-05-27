@@ -31,7 +31,9 @@ public class Ngcw implements Player, Piece{
 		Move bestMove = moves.peekFirst();
 		for (Move m : moves) {
 			g.update(m);
-			int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
+			// int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
+			int val = SearchAgent.negamaxABP(g, SearchAgent.maxPly, 
+					Integer.MIN_VALUE, Integer.MAX_VALUE, g.getPlayer());
 			g.revertUpdate(m);
 			if (val > bestScore) {
 				bestScore = val;
@@ -94,6 +96,9 @@ public class Ngcw implements Player, Piece{
 	@Override
 	public void printBoard(PrintStream output) {
 		for (int i = 0; i < g.getMaxSize(); i++) {
+			int whiteBuffer = g.getMaxSize() - g.getRowLength()[i];
+			for (int j = 0; j < whiteBuffer; j++) 
+				output.print(" ");
 			for (int j = 0; j < g.getRowLength()[i]; j++) {
 				switch(g.getBoard()[i][j]) {
 					case Piece.BLACK:

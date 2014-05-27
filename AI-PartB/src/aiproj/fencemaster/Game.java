@@ -40,16 +40,14 @@ public class Game {
 			rowLength[m] = maxSize - c;
 		}
 		
-		this.board = new int[maxSize][maxSize];
+		this.board = new int[maxSize][];
 		
 		// init for gameboard.
-		for (int i = maxSize; i < maxSize; i++) {
-			for (int j = maxSize; j < maxSize; j++) {
-				if ( j < rowLength[i] ) {
-					board[i][j] = Piece.EMPTY;
-					emptySpace++;
-				} else
-					board[i][j] = Piece.INVALID;
+		for (int i = 0; i < maxSize; i++) {
+			this.board[i] = new int[rowLength[i]];
+			for (int j = 0; j < rowLength[i]; j++) {
+				board[i][j] = Piece.EMPTY;
+				emptySpace++;
 			}
 		}
 		
@@ -71,7 +69,7 @@ public class Game {
 	 * @param col, column of piece being checked
 	 * @return boolean if piece is in bound
 	 */
-	public static boolean inBound(int[] rowLength, int row, int col){
+	public boolean inBound(int row, int col){
 		return (row >= 0 && col >= 0 && (row < rowLength[0]*2-1) && 
 				col < rowLength[row]);
 	}
@@ -85,92 +83,92 @@ public class Game {
 	 * @param player, player in check (White or Black)
 	 * @return ArrayDeque<int[]>, returns an ArrayDeque of surrounding pieces
 	 */
-	public ArrayDeque<int[]> checkSurrounding(int[][] board, int[] rowLength, 
-			int row, int col, int player){
+	public ArrayDeque<int[]> checkSurrounding(int row, int col, int player){
 		ArrayDeque<int[]> links = new ArrayDeque<int[]>(6);
 		int maxBoardSize = board.length;
 		// upper area of board
 		if (row < (maxBoardSize/2)){
 			// Top-Left
-			if (inBound(rowLength, row-1, col-1) && 
+			if (inBound(row-1, col-1) && 
 					(board[row-1][col-1] == player))
 				links.add(arrayFormat(row-1,col-1));
 			// Top
-			if (inBound(rowLength, row-1, col) && 
+			if (inBound(row-1, col) && 
 					(board[row-1][col] == player))
 				links.add(arrayFormat(row-1,col));
 			// Left
-			if (inBound(rowLength, row, col-1) && 
+			if (inBound(row, col-1) && 
 					(board[row][col-1] == player))
 				links.add(arrayFormat(row,col-1));
 			// Right
-			if (inBound(rowLength, row, col+1) && 
+			if (inBound(row, col+1) && 
 					(board[row][col+1] == player))
 				links.add(arrayFormat(row,col+1));
 			// Bottom
-			if (inBound(rowLength, row+1, col) && 
+			if (inBound(row+1, col) && 
 					(board[row+1][col] == player))
 				links.add(arrayFormat(row+1,col));
 			// Bottom-Right
-			if (inBound(rowLength, row+1, col+1) && 
+			if (inBound(row+1, col+1) && 
 					(board[row+1][col+1] == player))
 				links.add(arrayFormat(row+1,col+1));
 		// Middle line of board
 		}else if (row == (maxBoardSize/2)){
 			// Top-Left
-			if (inBound(rowLength, row-1, col-1) && 
+			if (inBound(row-1, col-1) && 
 					(board[row-1][col-1] == player))
 				links.add(arrayFormat(row-1,col-1));
 			// Top
-			if (inBound(rowLength, row-1, col) && 
+			if (inBound(row-1, col) && 
 					(board[row-1][col] == player))
 				links.add(arrayFormat(row-1,col));
 			// Left
-			if (inBound(rowLength, row, col-1) && 
+			if (inBound(row, col-1) && 
 					(board[row][col-1] == player))
 				links.add(arrayFormat(row,col-1));
 			// Right
-			if (inBound(rowLength, row, col+1) && 
+			if (inBound(row, col+1) && 
 					(board[row][col+1] == player))
 				links.add(arrayFormat(row,col+1));
 			// Bottom-Left
-			if (inBound(rowLength, row+1, col-1) && 
+			if (inBound(row+1, col-1) && 
 					(board[row+1][col-1] == player))
 				links.add(arrayFormat(row+1,col-1));
 			// Bottom
-			if (inBound(rowLength, row+1, col) && 
+			if (inBound(row+1, col) && 
 					(board[row+1][col] == player))
 				links.add(arrayFormat(row+1,col));
 		// bottom area of board
 		}else{
 			// Top-Right
-			if (inBound(rowLength, row-1, col+1) && 
+			if (inBound(row-1, col+1) && 
 					(board[row-1][col+1] == player))
 				links.add(arrayFormat(row-1,col+1));
 			// Top
-			if (inBound(rowLength, row-1, col) && 
+			if (inBound(row-1, col) && 
 					(board[row-1][col] == player))
 				links.add(arrayFormat(row-1,col));
 			// Left
-			if (inBound(rowLength, row, col-1) && 
+			if (inBound(row, col-1) && 
 					(board[row][col-1] == player))
 				links.add(arrayFormat(row,col-1));
 			// Right
-			if (inBound(rowLength, row, col+1) && 
+			if (inBound(row, col+1) && 
 					(board[row][col+1] == player))
 				links.add(arrayFormat(row,col+1));
 			// Bottom
-			if (inBound(rowLength, row+1, col) && 
+			if (inBound(row+1, col) && 
 					(board[row+1][col] == player))
 				links.add(arrayFormat(row+1,col));
 			// Bottom-Right
-			if (inBound(rowLength, row+1, col-1) && 
+			if (inBound(row+1, col-1) && 
 					(board[row+1][col-1] == player))
 				links.add(arrayFormat(row+1,col-1));
 			
 		}
 		return links;
 	}
+
 	/**
 	 * Format the row and column position of a piece into an array format
 	 * 
@@ -224,6 +222,7 @@ public class Game {
 		}
 		return false;
 	}
+	
 	/**
 	 * check if a piece is already in a visited ArrayDeque
 	 * 
@@ -240,6 +239,7 @@ public class Game {
 		}
 		return false;
 	}
+	
 	/**
 	 * check if there is any similar pieces in both ArrayDeque
 	 * 
@@ -258,6 +258,7 @@ public class Game {
 		}
 		return false;
 	}
+	
 	/**
 	 * Performs Chaining Search
 	 * 
@@ -269,16 +270,16 @@ public class Game {
 	 * @param path, a list of connected pieces
 	 * @return ArrayList<int[]>, a list of connected pieces (path)
 	 */
-	public ArrayList<int[]> boardDFS(int[][] board,int[] rowLength, int row, 
-			int col, int player, ArrayList<int[]> path){
-		ArrayDeque<int[]> links = checkSurrounding(board,rowLength,row,col,
-				player);
+	public ArrayList<int[]> boardDFS(int row, int col, int player, 
+			ArrayList<int[]> path) {
+		
+		ArrayDeque<int[]> links = checkSurrounding(row, col, player);
 		ArrayDeque<int[]> stack = new ArrayDeque<int[]>();
 		stack.addAll(links);
 		while (!stack.isEmpty()){
 			int[] piece = stack.removeLast();
 			path.add(piece);
-			links = checkSurrounding(board,rowLength,piece[0],piece[1],player);
+			links = checkSurrounding(piece[0], piece[1], player);
 			for (int[] item:links){
 				if (!checkVisit(path, item[0],item[1]) && 
 						!checkLink(stack, item[0],item[1])){
@@ -306,7 +307,7 @@ public class Game {
 		
 		for (int i = 0; i < this.maxSize; i++) {
 			for (int j = 0; j < this.rowLength[i]; j++) {
-				if (moveCount == 1 && this.board[i][j] == this.enemy) {
+				if (moveCount == 1 && this.board[i][j] == opponent) {
 					Move m = new Move(player, true, i, j);
 					moves.push(m);
 				}
@@ -317,6 +318,44 @@ public class Game {
 			}
 		}
 		return moves;
+	}
+	
+	/**
+	 * Counts the number of adjacent opponent pieces
+	 * MOBILITY FEATURE
+	 * 
+	 * @param opponent
+	 * @param r
+	 * @param c
+	 * @return
+	 */
+	public int adjacentEnemyCount(int piece, int r, int c) {
+		int count = 0;
+		
+		// Top Left
+		if (inBound(r - 1, c - 1) && board[r - 1][c - 1] == piece)
+			count++;
+		
+		// Top
+		if (inBound(r - 1, c) && board[r - 1][c] == piece)
+			count++;
+		
+		// Top Right;
+		if (inBound(r - 1, c + 1) && board[r - 1][c + 1] == piece)
+			count++;
+		
+		// Bottom Left;
+		if (inBound(r + 1, c - 1) && board[r + 1][c - 1] == piece)
+			count++;
+		// Bottom;
+		if (inBound(r + 1, c) && board[r + 1][c] == piece)
+			count++;
+		
+		// Bottom Right;
+		if (inBound(r + 1, c + 1) && board[r + 1][c + 1] == piece)
+			count++;
+		
+		return count;
 	}
 	
 	/** 

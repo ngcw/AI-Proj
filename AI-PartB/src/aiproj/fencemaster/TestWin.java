@@ -34,8 +34,7 @@ public class TestWin {
 						(!game.checkVisit(visited_w, i, j))){
 					ArrayList<int[]> path_w = new ArrayList<int[]>();
 					path_w.add(game.arrayFormat(i, j));
-					visited_w.addAll(game.boardDFS(game.getBoard(), 
-							game.getRowLength(), i, j, Piece.WHITE, path_w));
+					visited_w.addAll(game.boardDFS(i, j, Piece.WHITE, path_w));
 					
 					// check if there is a tripod win in the path
 					if (checkTripod(game, path_w) || checkLoop(game, path_w, Piece.WHITE)){
@@ -49,8 +48,7 @@ public class TestWin {
 						(!game.checkVisit(visited_b,i,j))){
 					ArrayList<int[]> path_b = new ArrayList<int[]>();
 					path_b.add(game.arrayFormat(i, j));
-					visited_b.addAll(game.boardDFS(game.getBoard(), 
-							game.getRowLength(), i, j, Piece.BLACK, path_b));
+					visited_b.addAll(game.boardDFS(i, j, Piece.BLACK, path_b));
 					// check if there is a tripod win in the path
 					if (checkTripod(game, path_b) || checkLoop(game, path_b, Piece.BLACK)){
 						return Piece.BLACK;
@@ -160,16 +158,12 @@ public class TestWin {
 			// a loop can only happen when the starting player piece have two 
 			// other surrounding player pieces
 			int[] move = path.get(0);
-			ArrayDeque<int[]> links = g.checkSurrounding(g.getBoard(),
-	    			g.getRowLength(),move[0],move[1],player);
-			ArrayDeque<int[]> startLink = g.checkSurrounding(g.getBoard(),
-	    			g.getRowLength(),move[0],move[1],player);
-			for (int i = 1; links.size() < 2 && path.size()-i > 5; i++){
+			ArrayDeque<int[]> links = g.checkSurrounding(move[0], move[1], player);
+			ArrayDeque<int[]> startLink = g.checkSurrounding(move[0], move[1], player);
+			for (int i = 1; links.size() < 2 && (path.size() - i) > 5; i++){
 				move = path.get(i);
-				links = g.checkSurrounding(g.getBoard(),
-		    			g.getRowLength(),move[0],move[1],player);
-				startLink = g.checkSurrounding(g.getBoard(),
-		    			g.getRowLength(),move[0],move[1],player);
+				links = g.checkSurrounding(move[0], move[1], player);
+				startLink = g.checkSurrounding(move[0], move[1], player);
 			}
 			loop.add(move);
 			if (startLink.size() > 1){
@@ -187,8 +181,7 @@ public class TestWin {
 						&& !junction.isEmpty()){
 					count = junction.removeLast()[0]+1;
 				}
-				links = g.checkSurrounding(g.getBoard(),g.getRowLength(),
-						piece[0],piece[1],player);
+				links = g.checkSurrounding(piece[0], piece[1], player);
 				if (count > 3 && g.checkLoopConnect(links, startLink) &&
 						circleConstraint(g,loop,player)){
 					return true;
@@ -230,10 +223,8 @@ public class TestWin {
 		}
 		// look for the link between second last piece and first piece in loop
 		// then add into loopTemp Arraylist
-		for (int[] piece: g.checkSurrounding(g.getBoard(), g.getRowLength(), 
-				first[0], first[1], player)){
-			for (int[] piece2: g.checkSurrounding(g.getBoard(), g.getRowLength(), 
-				last[0], last[1], player)){
+		for (int[] piece: g.checkSurrounding(first[0], first[1], player)){
+			for (int[] piece2: g.checkSurrounding(last[0], last[1], player)){
 				if (piece[0] == piece2[0] && piece[1] == piece2[1]){
 					loopTemp.add(piece);
 				}
