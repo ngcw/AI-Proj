@@ -1,5 +1,7 @@
 1. Search Agent 
-	Negamax with Alpha Beta Pruning
+	- Search Algorithm: Negamax with Alpha Beta Pruning
+	- Enhancements: 
+		- Move Ordering based on Adjacency as well.
 
 2. Static Evaluation Function
 	Feature Set:
@@ -9,3 +11,5 @@
 		We always award pieces who try to clump up to 2, more than that, we do 
 		not award as it does not mean anything.
 		If the adjacency is 2, it might mean, its trying to form a path.
+
+	

@@ -304,19 +304,30 @@ public class Game {
 			opponent = Piece.WHITE;
 		
 		LinkedList<Move> moves = new LinkedList<Move>();
-		
-		for (int i = 0; i < this.maxSize; i++) {
-			for (int j = 0; j < this.rowLength[i]; j++) {
-				if (moveCount == 1 && this.board[i][j] == opponent) {
-					Move m = new Move(player, true, i, j);
-					moves.push(m);
+		if (moveCount == 1) {
+			for (int i = 0; i < this.maxSize; i++) {
+				for (int j = 0; j < this.rowLength[i]; j++) {
+					if (this.board[i][j] == opponent) {
+						Move m = new Move(player, true, i, j);
+						moves.push(m);
+					}
+					if (this.board[i][j] == Piece.EMPTY) {
+						Move m = new Move(player, false, i, j);
+						moves.push(m);
+					}
 				}
-				if (this.board[i][j] == Piece.EMPTY) {
-					Move m = new Move(player, false, i, j);
-					moves.push(m);
+			}
+		} else {
+			for (int i = 0; i < this.maxSize; i++) {
+				for (int j = 0; j < this.rowLength[i]; j++) {
+					if (this.board[i][j] == Piece.EMPTY) {
+						Move m = new Move(player, false, i, j);
+						moves.push(m);
+					}
 				}
 			}
 		}
+		
 		return moves;
 	}
 	
@@ -329,7 +340,7 @@ public class Game {
 	 * @param c
 	 * @return
 	 */
-	public int adjacentEnemyCount(int piece, int r, int c) {
+	public int adjacentCount(int piece, int r, int c) {
 		int count = 0;
 		
 		// Top Left
@@ -419,9 +430,9 @@ public class Game {
 	public boolean terminalGame() {
 		int result = TestWin.checkWinner(this);
 		
-		if (result == Piece.BLACK || result == Piece.WHITE)
-			return true;
-		else
+		if (result == Piece.INVALID)
 			return false;
+		else
+			return true;
 	}
 }

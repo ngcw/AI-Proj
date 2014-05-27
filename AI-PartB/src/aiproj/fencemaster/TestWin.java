@@ -31,13 +31,13 @@ public class TestWin {
 				// check if piece in board is White player's piece and then 
 				// traverse following pieces connected to form a path
 				if ((game.getBoard()[i][j] == Piece.WHITE) && 
-						(!game.checkVisit(visited_w, i, j))){
+						(!game.checkVisit(visited_w, i, j))) {
 					ArrayList<int[]> path_w = new ArrayList<int[]>();
 					path_w.add(game.arrayFormat(i, j));
 					visited_w.addAll(game.boardDFS(i, j, Piece.WHITE, path_w));
 					
 					// check if there is a tripod win in the path
-					if (checkTripod(game, path_w) || checkLoop(game, path_w, Piece.WHITE)){
+					if (checkTripod(game, path_w) || checkLoop(game, path_w, Piece.WHITE)) {
 						return Piece.WHITE;
 					}
 					path_w.clear();
@@ -50,7 +50,7 @@ public class TestWin {
 					path_b.add(game.arrayFormat(i, j));
 					visited_b.addAll(game.boardDFS(i, j, Piece.BLACK, path_b));
 					// check if there is a tripod win in the path
-					if (checkTripod(game, path_b) || checkLoop(game, path_b, Piece.BLACK)){
+					if (checkTripod(game, path_b) || checkLoop(game, path_b, Piece.BLACK)) {
 						return Piece.BLACK;
 					}
 					path_b.clear();

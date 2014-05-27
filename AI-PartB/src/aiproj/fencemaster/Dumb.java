@@ -3,8 +3,7 @@ package aiproj.fencemaster;
 import java.io.PrintStream;
 import java.util.LinkedList;
 
-
-public class Ngcw implements Player, Piece{
+public class Dumb implements Player, Piece {
 	Game g;
 	static int instanceCount = 0;
 	static final int maxInstanceCount = 2;
@@ -27,21 +26,7 @@ public class Ngcw implements Player, Piece{
 	@Override
 	public Move makeMove() {
 		LinkedList<Move> moves = g.generateMoves(g.getPlayer());
-		int bestScore = Integer.MIN_VALUE;
-		Move bestMove = moves.peekFirst();
-		for (Move m : moves) {
-			g.update(m);
-			// int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
-			int val = -SearchAgent.negamaxABP(g, SearchAgent.maxPly, 
-					Integer.MIN_VALUE, Integer.MAX_VALUE, g.getPlayer());
-			g.revertUpdate(m);
-			if (val > bestScore) {
-				bestScore = val;
-				bestMove = m;
-			}
-			//System.out.println("SCORE:" + val);
-			//System.out.println("1 Move Evaluated");
-		}
+		Move bestMove = moves.peekLast();
 		g.update(bestMove);
 		// System.out.println("BEST SCORE:" + bestScore);
 		return bestMove;
