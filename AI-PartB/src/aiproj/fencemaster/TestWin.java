@@ -154,6 +154,7 @@ public class TestWin {
 		// a loop needs to be at least of 6 pieces
 		if (path.size() > 5) {
 			ArrayList<int[]> loop = new ArrayList<int[]>();
+			ArrayList<int[]> loopVisited = new ArrayList<int[]>();
 			ArrayDeque<int[]> junction = new ArrayDeque<int[]>();
 			// a loop can only happen when the starting player piece have two 
 			// other surrounding player pieces
@@ -166,6 +167,7 @@ public class TestWin {
 				startLink = g.checkSurrounding(move[0], move[1], player);
 			}
 			loop.add(move);
+			loopVisited.add(move);
 			if (startLink.size() > 1){
 				junction.add(g.arrayFormat(0, 0));
 			}
@@ -175,12 +177,19 @@ public class TestWin {
 			stack.addAll(links);
 			while (!stack.isEmpty()){
 				int[] piece = stack.removeLast();
-				loop.add(piece);
 				// reset count to number at other branch
 				if (!g.checkLink(links, piece[0], piece[1]) 
 						&& !junction.isEmpty()){
-					count = junction.removeLast()[0]+1;
+					int prevCount = count;
+					count = junction.removeLast()[0];
+					while(prevCount != count)
+					{
+						loop.remove(prevCount-1);
+						prevCount--;
+					}
 				}
+				loop.add(piece);
+				loopVisited.add(piece);
 				links = g.checkSurrounding(piece[0], piece[1], player);
 				if (count > 3 && g.checkLoopConnect(links, startLink) &&
 						circleConstraint(g,loop,player)){
@@ -188,7 +197,7 @@ public class TestWin {
 				}
 				int link_count = 0;
 				for (int[] item:links){
-					if (!g.checkVisit(loop, item[0],item[1]) && 
+					if (!g.checkVisit(loopVisited, item[0],item[1]) && 
 							!g.checkLink(stack, item[0],item[1])){
 						stack.add(item);
 						link_count++;
