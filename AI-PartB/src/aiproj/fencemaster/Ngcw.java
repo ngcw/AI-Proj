@@ -33,7 +33,7 @@ public class Ngcw implements Player, Piece{
 			g.update(m);
 			// int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
 			int val = -SearchAgent.negamaxABP(g, SearchAgent.maxPly, 
-					Integer.MIN_VALUE, Integer.MAX_VALUE, g.getPlayer());
+					Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 			g.revertUpdate(m);
 			if (val > bestScore) {
 				bestScore = val;
