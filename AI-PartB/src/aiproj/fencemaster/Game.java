@@ -10,6 +10,7 @@ package aiproj.fencemaster;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 public class Game {
 	// static variables
@@ -21,6 +22,8 @@ public class Game {
 	private int maxSize;
 	private int moveCount = 1;
 	private int emptySpace = 0;
+
+	public int[][] positionScoreArray;
 	
 	private int player, enemy;
 	
@@ -49,6 +52,36 @@ public class Game {
 				board[i][j] = Piece.EMPTY;
 				emptySpace++;
 			}
+		}
+		
+		// generate position heuristics
+		this.positionScoreArray = new int[maxSize][];
+		for (int i = 0; i < boardSize; i++) {
+			this.positionScoreArray[i] = new int[rowLength[i]];
+			// decrementer loop
+			for (int j = 0; j < i; j++) {
+				positionScoreArray[i][j] = boardSize - j;
+				positionScoreArray[i][rowLength[i] - j - 1] = boardSize - j; 
+			}
+			// constant loop
+			for (int j = 0; j < boardSize - i; j++) {
+				positionScoreArray[i][i + j] = boardSize - i;
+			}
+			
+		}
+		
+		for (int i = (boardSize - 1); i > 0; i--) {
+			this.positionScoreArray[maxSize - i] = new int[rowLength[maxSize - i]];
+			// Decrementer Loop
+			for (int j = 0; j < i; j++) {
+				positionScoreArray[maxSize - i][j] = boardSize - j;
+				positionScoreArray[maxSize - i][rowLength[maxSize - i] - j - 1] = boardSize - j; 
+			}
+			// Constant Loop
+			for (int j = 0; j < boardSize - i; j++) {
+				positionScoreArray[maxSize - i][j + i] = boardSize - i + 1;
+			}
+
 		}
 		
 		this.setPlayer(piece);
@@ -296,14 +329,14 @@ public class Game {
 	 * @return
 	 */
 	public LinkedList<Move> generateMoves(int player) {
-		int opponent = 0;
 		
-		if (player == Piece.WHITE)
-			opponent = Piece.BLACK;
-		else
-			opponent = Piece.WHITE;
+		int opponent = player == Piece.WHITE ? Piece.BLACK : Piece.WHITE;
 		
 		LinkedList<Move> moves = new LinkedList<Move>();
+		
+		LinkedList<Move> goodMoves = new LinkedList<Move>();
+		LinkedList<Move> ordinaries = new LinkedList<Move>();
+		
 		if (moveCount == 1) {
 			for (int i = 0; i < this.maxSize; i++) {
 				for (int j = 0; j < this.rowLength[i]; j++) {
@@ -320,12 +353,18 @@ public class Game {
 		} else {
 			for (int i = 0; i < this.maxSize; i++) {
 				for (int j = 0; j < this.rowLength[i]; j++) {
-					if (this.board[i][j] == Piece.EMPTY) {
+					if (this.board[i][j] == Piece.EMPTY && randomAdjacent(i, j)) {
 						Move m = new Move(player, false, i, j);
-						moves.push(m);
+						goodMoves.push(m);
+					}
+					if (this.board[i][j] == Piece.EMPTY && !randomAdjacent(i, j)) {
+						Move m = new Move(player, false, i, j);
+						ordinaries.push(m);
 					}
 				}
 			}
+			moves.addAll(goodMoves);
+			moves.addAll(ordinaries);
 		}
 		
 		return moves;
@@ -367,6 +406,38 @@ public class Game {
 			count++;
 		
 		return count;
+	}
+	
+	public boolean randomAdjacent(int r, int c) {
+		int count = 0;
+		
+		// Top Left
+		if (inBound(r - 1, c - 1) && board[r - 1][c - 1] != Piece.EMPTY)
+			count++;
+		
+		// Top
+		if (inBound(r - 1, c) && board[r - 1][c] != Piece.EMPTY)
+			count++;
+		
+		// Top Right;
+		if (inBound(r - 1, c + 1) && board[r - 1][c + 1] != Piece.EMPTY)
+			count++;
+		
+		// Bottom Left;
+		if (inBound(r + 1, c - 1) && board[r + 1][c - 1] != Piece.EMPTY)
+			count++;
+		// Bottom;
+		if (inBound(r + 1, c) && board[r + 1][c] != Piece.EMPTY)
+			count++;
+		
+		// Bottom Right;
+		if (inBound(r + 1, c + 1) && board[r + 1][c + 1] != Piece.EMPTY)
+			count++;
+		
+		if (count > 0)
+			return true;
+			
+		return false;
 	}
 	
 	/** 
@@ -425,8 +496,12 @@ public class Game {
 	public void setEnemy(int enemy) {
 		this.enemy = enemy;
 	}
-
 	
+	public int getMoveCount() {
+		return moveCount;
+	}
+
+
 	public boolean terminalGame() {
 		int result = TestWin.checkWinner(this);
 		

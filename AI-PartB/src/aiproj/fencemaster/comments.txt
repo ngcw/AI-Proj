@@ -1,15 +1,16 @@
 1. Search Agent 
 	- Search Algorithm: Negamax with Alpha Beta Pruning
-	- Enhancements: 
+	- Creative Enhancements: 
 		- Move Ordering based on Adjacency as well.
 
 2. Static Evaluation Function
 	Feature Set:
 	- Heuristical Positioning
 		Corner Avoidance since it does not contribute to victory goals.
-	- Adjacency
-		We always award pieces who try to clump up to 2, more than that, we do 
-		not award as it does not mean anything.
-		If the adjacency is 2, it might mean, its trying to form a path.
+	- Control
+		We encourage pieces to cluster and we penalise enemy's attempt to cluster.
 
+3. 3-Ply Search Minimum Depth for Game Playing Agent to play rationally. 
+	Due to this restriction, we may exceed time limit imposed on test.
 	
+4. 

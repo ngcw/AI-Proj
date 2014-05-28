@@ -26,14 +26,19 @@ public class Ngcw implements Player, Piece{
 
 	@Override
 	public Move makeMove() {
-		LinkedList<Move> moves = g.generateMoves(g.getPlayer());
+		
+		LinkedList<Move> moves;
+		
+
+		moves = g.generateMoves(g.getPlayer());
+		
 		int bestScore = Integer.MIN_VALUE;
 		Move bestMove = moves.peekFirst();
 		for (Move m : moves) {
 			g.update(m);
 			// int val = SearchAgent.negamax(g, SearchAgent.maxPly, g.getPlayer());
-			int val = -SearchAgent.negamaxABP(g, SearchAgent.maxPly, 
-					Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+			int val = - SearchAgent.negamaxABP(g, SearchAgent.maxPly, 
+					Integer.MIN_VALUE, Integer.MAX_VALUE, -1);
 			g.revertUpdate(m);
 			if (val > bestScore) {
 				bestScore = val;

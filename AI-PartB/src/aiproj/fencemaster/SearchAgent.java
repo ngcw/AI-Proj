@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class SearchAgent {
 	
-	public static int maxPly = 2;
+	public static int maxPly = 3;
 	
 	public static int negamaxABP(Game g, int depth, int alpha, int beta, int color) {		
 		
@@ -13,25 +13,18 @@ public class SearchAgent {
 		}
 		
 		int bestValue = Integer.MIN_VALUE;
-		int player;
+		int player = color == 1? g.getPlayer() : g.getEnemy();
 		
-		if (color > 0)
-			player = g.getEnemy();
-		else
-			player = g.getPlayer();
 		LinkedList<Move> moves = g.generateMoves(player);
 		
-		// Order Moves
 		for (Move m : moves) {
 			g.update(m);
-			int val = SearchAgent.negamaxABP(g, depth - 1, -alpha, -beta, -color);
+			int val = - SearchAgent.negamaxABP(g, depth - 1, -beta, -alpha, -color);
 			//System.out.println("Score:" + val);
 			//System.out.println("ALPHA:" + alpha);
+			bestValue = Math.max(bestValue, val);
+			alpha = Math.max(alpha, val);
 			g.revertUpdate(m);
-			if (val > bestValue) 
-				bestValue = val;
-			if (val > alpha)
-				alpha = val;
 			if (alpha >= beta) {
 				//System.out.println("Pruning Occured!");
 				break;
