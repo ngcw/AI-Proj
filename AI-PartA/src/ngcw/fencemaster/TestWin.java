@@ -218,6 +218,7 @@ public class TestWin {
 		// a loop needs to be at least of 6 pieces
 		if (path.size() > 5){
 			ArrayList<int[]> loop = new ArrayList<int[]>();
+			ArrayList<int[]> loopVisited = new ArrayList<int[]>();
 			ArrayDeque<int[]> junction = new ArrayDeque<int[]>();
 			// a loop can only happen when the starting player piece have two 
 			// other surrounding player pieces
@@ -234,39 +235,66 @@ public class TestWin {
 		    			g.getRowLength(),move[0],move[1],player);
 			}
 			loop.add(move);
-			if (startLink.size() > 2){
-				junction.add(g.arrayFormat(0, 0));
+			loopVisited.add(move);
+			int count = 1;
+			if (startLink.size() > 1){
+				for (int i = 1; i < startLink.size();i++)
+				{
+					junction.add(g.arrayFormat(count, 0));
+				}
 			}
 			// Depth First Search to find shortest possible loop
-			int count = 1;
+			
 			ArrayDeque<int[]> stack = new ArrayDeque<int[]>();
 			stack.addAll(links);
+			for (int[] item: stack){
+			}
 			while (!stack.isEmpty()){
 				int[] piece = stack.removeLast();
-				loop.add(piece);
 				// reset count to number at other branch
 				if (!g.checkLink(links, piece[0], piece[1]) 
 						&& !junction.isEmpty()){
-					count = junction.removeLast()[0]+1;
+					int prevCount = count;
+					count = junction.removeLast()[0];
+					System.out.println("back to:" +count);
+					while(prevCount != count)
+					{
+						loop.remove(prevCount-1);
+						prevCount--;
+					}
+				}else if (stack.size() < junction.size()){
+					for (int i = 0; i < (junction.size()-stack.size());i++){
+						count = junction.removeLast()[0];
+					}
 				}
+				
+				loop.add(piece);
+				loopVisited.add(piece);
 				links = g.checkSurrounding(g.getBoard(),g.getRowLength(),
 						piece[0],piece[1],player);
+				
 				if (count > 3 && g.checkLoopConnect(links, startLink) &&
 						circleConstrain(g,loop,player)){
 					return true;
 				}
 				int link_count = 0;
 				for (int[] item:links){
-					if (!g.checkVisit(loop, item[0],item[1]) && 
+					if (!g.checkVisit(loopVisited, item[0],item[1]) && 
 							!g.checkLink(stack, item[0],item[1])){
+						System.out.println(player+":"+item[0] +"-" +item[1]);
 						stack.add(item);
 						link_count++;
-					}	
+					}
+					
 				}
 				// if more than 1 branch is added to stack, add position to
 				// junction
 				if (link_count > 1){
-					junction.add(g.arrayFormat(count, 0));
+					for (int i = 1; i < link_count;i++)
+					{
+						junction.add(g.arrayFormat(count, 0));
+					}
+					
 				}
 				count++;
 			}
@@ -288,6 +316,7 @@ public class TestWin {
 		ArrayList<int[]> loopTemp = new ArrayList<int[]>();
 		ArrayList<int[]> pieceInLoop = new ArrayList<int[]>();
 		for (int[] piece: loop){
+			//System.out.println(piece[0] +"-" +piece[1]);
 			loopTemp.add(piece);
 		}
 		// look for the link between second last piece and first piece in loop
@@ -297,6 +326,7 @@ public class TestWin {
 			for (int[] piece2: g.checkSurrounding(g.getBoard(), g.getRowLength(), 
 				last[0], last[1], player)){
 				if (piece[0] == piece2[0] && piece[1] == piece2[1]){
+					//System.out.println("Link:"+piece[0] +"-" +piece[1]);
 					loopTemp.add(piece);
 				}
 			}

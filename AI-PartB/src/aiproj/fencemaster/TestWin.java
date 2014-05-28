@@ -168,11 +168,15 @@ public class TestWin {
 			}
 			loop.add(move);
 			loopVisited.add(move);
+			int count = 1;
 			if (startLink.size() > 1){
-				junction.add(g.arrayFormat(0, 0));
+				for (int i = 1; i < startLink.size();i++)
+				{
+					junction.add(g.arrayFormat(count, 0));
+				}
 			}
 			// Depth First Search to find shortest possible loop
-			int count = 1;
+			
 			ArrayDeque<int[]> stack = new ArrayDeque<int[]>();
 			stack.addAll(links);
 			while (!stack.isEmpty()){
@@ -186,6 +190,10 @@ public class TestWin {
 					{
 						loop.remove(prevCount-1);
 						prevCount--;
+					}
+				}else if (stack.size() < junction.size()){
+					for (int i = 0; i < (junction.size()-stack.size());i++){
+						count = junction.removeLast()[0];
 					}
 				}
 				loop.add(piece);
@@ -206,7 +214,10 @@ public class TestWin {
 				// if more than 1 branch is added to stack, add position to
 				// junction
 				if (link_count > 1){
-					junction.add(g.arrayFormat(count, 0));
+					for (int i = 1; i < link_count;i++)
+					{
+						junction.add(g.arrayFormat(count, 0));
+					}
 				}
 				count++;
 			}
